@@ -1,0 +1,11 @@
+# grumphp.yml
+grumphp:
+    tasks:
+        git_blacklist:
+            keywords:
+                - "die("
+                - "var_dump("
+                - "dump("
+                - "dd("
+        phpcsfixer:
+            config: '.php-cs-fixer.dist.php'
