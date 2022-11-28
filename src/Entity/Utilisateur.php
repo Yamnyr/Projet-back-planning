@@ -43,7 +43,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Evenement::class)]
     private Collection $evenement;
 
-
     public function __construct()
     {
         $this->creer_groupe = new ArrayCollection();

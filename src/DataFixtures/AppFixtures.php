@@ -2,7 +2,6 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Groupe;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -14,6 +13,5 @@ class AppFixtures extends Fixture
         // $manager->persist($product);
 
         $manager->flush();
-
     }
 }
