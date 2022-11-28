@@ -6,6 +6,5 @@ grumphp:
                 - "die("
                 - "var_dump("
                 - "dump("
-                - "dd("
         phpcsfixer:
             config: '.php-cs-fixer.dist.php'

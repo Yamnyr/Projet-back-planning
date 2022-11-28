@@ -30,10 +30,20 @@ class Groupe
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'creer_groupe')]
     private Collection $utilisateurs;
 
+    #[ORM\Column(length: 7)]
+    private ?string $color = null;
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'groupes')]
+    private ?self $groupe_parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'groupe_parent', targetEntity: self::class)]
+    private Collection $groupes;
+
     public function __construct()
     {
         $this->evenements = new ArrayCollection();
         $this->utilisateurs = new ArrayCollection();
+        $this->groupes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +124,60 @@ class Groupe
     {
         if ($this->utilisateurs->removeElement($utilisateur)) {
             $utilisateur->removeCreerGroupe($this);
+        }
+
+        return $this;
+    }
+
+    public function getColor(): ?string
+    {
+        return $this->color;
+    }
+
+    public function setColor(string $color): self
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    public function getGroupeParent(): ?self
+    {
+        return $this->groupe_parent;
+    }
+
+    public function setGroupeParent(?self $groupe_parent): self
+    {
+        $this->groupe_parent = $groupe_parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getGroupes(): Collection
+    {
+        return $this->groupes;
+    }
+
+    public function addGroupe(self $groupe): self
+    {
+        if (!$this->groupes->contains($groupe)) {
+            $this->groupes->add($groupe);
+            $groupe->setGroupeParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupe(self $groupe): self
+    {
+        if ($this->groupes->removeElement($groupe)) {
+            // set the owning side to null (unless already changed)
+            if ($groupe->getGroupeParent() === $this) {
+                $groupe->setGroupeParent(null);
+            }
         }
 
         return $this;

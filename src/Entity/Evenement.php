@@ -27,17 +27,11 @@ class Evenement
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $heure_debut = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $heure_fin = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $localisation = null;
-
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'evenements')]
     private Collection $concerne;
+
+    #[ORM\ManyToOne(inversedBy: 'evenement')]
+    private ?Utilisateur $utilisateur = null;
 
     public function __construct()
     {
@@ -141,6 +135,18 @@ class Evenement
     public function removeConcerne(Groupe $concerne): self
     {
         $this->concerne->removeElement($concerne);
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): self
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }
