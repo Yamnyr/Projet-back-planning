@@ -34,7 +34,7 @@ class AppFixtures extends Fixture
 
         for ($i = 0; $i < 20; ++$i) {
             $even = EvenementFactory::createOne([
-            ])->setUtilisateur($prof[rand(0, 2)]->object())->addConcerne($grp[rand(1,3)]);
+            ])->setUtilisateur($prof[rand(0, 2)]->object())->addConcerne($grp[rand(1, 3)]);
             $manager->persist($even);
         }
         $manager->flush();
