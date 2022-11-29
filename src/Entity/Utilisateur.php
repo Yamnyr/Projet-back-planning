@@ -40,13 +40,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'utilisateurs')]
     private Collection $creer_groupe;
 
-    #[ORM\ManyToMany(targetEntity: Matiere::class, inversedBy: 'utilisateurs')]
-    private Collection $Avoir_matiere;
-
     public function __construct()
     {
         $this->creer_groupe = new ArrayCollection();
-        $this->Avoir_matiere = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -177,30 +173,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCreerGroupe(Groupe $creerGroupe): self
     {
         $this->creer_groupe->removeElement($creerGroupe);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Matiere>
-     */
-    public function getAvoirMatiere(): Collection
-    {
-        return $this->Avoir_matiere;
-    }
-
-    public function addAvoirMatiere(Matiere $avoirMatiere): self
-    {
-        if (!$this->Avoir_matiere->contains($avoirMatiere)) {
-            $this->Avoir_matiere->add($avoirMatiere);
-        }
-
-        return $this;
-    }
-
-    public function removeAvoirMatiere(Matiere $avoirMatiere): self
-    {
-        $this->Avoir_matiere->removeElement($avoirMatiere);
 
         return $this;
     }
