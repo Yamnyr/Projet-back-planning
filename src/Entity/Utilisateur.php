@@ -40,13 +40,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'utilisateurs')]
     private Collection $creer_groupe;
 
-    #[ORM\ManyToMany(targetEntity: Matiere::class, inversedBy: 'utilisateurs')]
-    private Collection $Avoir_matiere;
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Evenement::class)]
+    private Collection $evenement;
 
     public function __construct()
     {
         $this->creer_groupe = new ArrayCollection();
-        $this->Avoir_matiere = new ArrayCollection();
+        $this->evenement = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -182,25 +182,31 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, Matiere>
+     * @return Collection<int, Evenement>
      */
-    public function getAvoirMatiere(): Collection
+    public function getEvenement(): Collection
     {
-        return $this->Avoir_matiere;
+        return $this->evenement;
     }
 
-    public function addAvoirMatiere(Matiere $avoirMatiere): self
+    public function addEvenement(Evenement $evenement): self
     {
-        if (!$this->Avoir_matiere->contains($avoirMatiere)) {
-            $this->Avoir_matiere->add($avoirMatiere);
+        if (!$this->evenement->contains($evenement)) {
+            $this->evenement->add($evenement);
+            $evenement->setUtilisateur($this);
         }
 
         return $this;
     }
 
-    public function removeAvoirMatiere(Matiere $avoirMatiere): self
+    public function removeEvenement(Evenement $evenement): self
     {
-        $this->Avoir_matiere->removeElement($avoirMatiere);
+        if ($this->evenement->removeElement($evenement)) {
+            // set the owning side to null (unless already changed)
+            if ($evenement->getUtilisateur() === $this) {
+                $evenement->setUtilisateur(null);
+            }
+        }
 
         return $this;
     }
