@@ -27,17 +27,11 @@ class Evenement
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $heure_debut = null;
-
-    #[ORM\Column(type: Types::TIME_MUTABLE, nullable: true)]
-    private ?\DateTimeInterface $heure_fin = null;
-
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $localisation = null;
-
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'evenements')]
     private Collection $concerne;
+
+    #[ORM\ManyToOne(inversedBy: 'evenement')]
+    private ?Utilisateur $utilisateur = null;
 
     public function __construct()
     {
@@ -85,42 +79,6 @@ class Evenement
         return $this;
     }
 
-    public function getHeureDebut(): ?\DateTimeInterface
-    {
-        return $this->heure_debut;
-    }
-
-    public function setHeureDebut(?\DateTimeInterface $heure_debut): self
-    {
-        $this->heure_debut = $heure_debut;
-
-        return $this;
-    }
-
-    public function getHeureFin(): ?\DateTimeInterface
-    {
-        return $this->heure_fin;
-    }
-
-    public function setHeureFin(?\DateTimeInterface $heure_fin): self
-    {
-        $this->heure_fin = $heure_fin;
-
-        return $this;
-    }
-
-    public function getLocalisation(): ?string
-    {
-        return $this->localisation;
-    }
-
-    public function setLocalisation(?string $localisation): self
-    {
-        $this->localisation = $localisation;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Groupe>
      */
@@ -141,6 +99,18 @@ class Evenement
     public function removeConcerne(Groupe $concerne): self
     {
         $this->concerne->removeElement($concerne);
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?Utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?Utilisateur $utilisateur): self
+    {
+        $this->utilisateur = $utilisateur;
 
         return $this;
     }

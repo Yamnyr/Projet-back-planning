@@ -40,9 +40,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'utilisateurs')]
     private Collection $creer_groupe;
 
+    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Evenement::class)]
+    private Collection $evenement;
+
     public function __construct()
     {
         $this->creer_groupe = new ArrayCollection();
+        $this->evenement = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -173,6 +177,36 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeCreerGroupe(Groupe $creerGroupe): self
     {
         $this->creer_groupe->removeElement($creerGroupe);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Evenement>
+     */
+    public function getEvenement(): Collection
+    {
+        return $this->evenement;
+    }
+
+    public function addEvenement(Evenement $evenement): self
+    {
+        if (!$this->evenement->contains($evenement)) {
+            $this->evenement->add($evenement);
+            $evenement->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvenement(Evenement $evenement): self
+    {
+        if ($this->evenement->removeElement($evenement)) {
+            // set the owning side to null (unless already changed)
+            if ($evenement->getUtilisateur() === $this) {
+                $evenement->setUtilisateur(null);
+            }
+        }
 
         return $this;
     }

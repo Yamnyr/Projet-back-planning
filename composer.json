@@ -72,6 +72,7 @@
         ],
         "cs": "tools/php-cs-fixer/vendor/bin/php-cs-fixer fix",
         "db": "php bin/console doctrine:database:drop --if-exists --force && php bin/console doctrine:database:create && php bin/console doctrine:migration:migrate && php bin/console doctrine:fixtures:load --no-interaction"
+
     },
     "conflict": {
         "symfony/symfony": "*"
