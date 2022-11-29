@@ -16,20 +16,15 @@ class AppFixtures extends Fixture
         $eleve = UtilisateurFactory::createMany(5, ['roles' => ['ROLE_ELEVE']]);
         $prof = UtilisateurFactory::createMany(3, ['roles' => ['ROLE_PROFESSEUR']]);
 
-        for ($i = 0; $i < 20; ++$i) {
-            $even = EvenementFactory::createOne([
-            ])->setUtilisateur($prof[rand(0, 2)]->object());
-            $manager->persist($even);
-        }
         $manager->flush();
 
-        $grpinfo = GroupeFactory::createOne(['lib_groupe' => 'Dept. Informatique']);
-        $grpwim = GroupeFactory::createOne(['lib_groupe' => 'LP-WIMSI'])->setGroupeParent($grpinfo->object());
-        $grpA = GroupeFactory::createOne(['lib_groupe' => 'groupe A'])->setGroupeParent($grpwim)
+        $grp[0] = GroupeFactory::createOne(['lib_groupe' => 'Dept. Informatique']);
+        $grp[1] = GroupeFactory::createOne(['lib_groupe' => 'LP-WIMSI'])->setGroupeParent($grp[0]->object());
+        $grp[2] = GroupeFactory::createOne(['lib_groupe' => 'groupe A'])->setGroupeParent($grp[1])
             ->addUtilisateur($prof[0]->object())
             ->addUtilisateur($eleve[3]->object())
             ->addUtilisateur($eleve[4]->object());
-        $grpB = GroupeFactory::createOne(['lib_groupe' => 'groupe B'])->setGroupeParent($grpwim)
+        $grp[3] = GroupeFactory::createOne(['lib_groupe' => 'groupe B'])->setGroupeParent($grp[1])
             ->addUtilisateur($prof[1]->object())
             ->addUtilisateur($eleve[0]->object())
             ->addUtilisateur($eleve[1]->object())
@@ -37,5 +32,11 @@ class AppFixtures extends Fixture
 
         $manager->flush();
 
+        for ($i = 0; $i < 20; ++$i) {
+            $even = EvenementFactory::createOne([
+            ])->setUtilisateur($prof[rand(0, 2)]->object())->addConcerne($grp[rand(1,3)]);
+            $manager->persist($even);
+        }
+        $manager->flush();
     }
 }
