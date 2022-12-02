@@ -79,42 +79,6 @@ class Evenement
         return $this;
     }
 
-    public function getHeureDebut(): ?\DateTimeInterface
-    {
-        return $this->heure_debut;
-    }
-
-    public function setHeureDebut(?\DateTimeInterface $heure_debut): self
-    {
-        $this->heure_debut = $heure_debut;
-
-        return $this;
-    }
-
-    public function getHeureFin(): ?\DateTimeInterface
-    {
-        return $this->heure_fin;
-    }
-
-    public function setHeureFin(?\DateTimeInterface $heure_fin): self
-    {
-        $this->heure_fin = $heure_fin;
-
-        return $this;
-    }
-
-    public function getLocalisation(): ?string
-    {
-        return $this->localisation;
-    }
-
-    public function setLocalisation(?string $localisation): self
-    {
-        $this->localisation = $localisation;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Groupe>
      */
