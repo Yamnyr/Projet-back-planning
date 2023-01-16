@@ -2,12 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Odm\Filter\OrderFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
-use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
-use App\Controller\test;
+use ApiPlatform\Metadata\Put;
 use App\Controller\UtilisateurGroupe;
 use App\Repository\GroupeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -27,15 +28,15 @@ use Doctrine\ORM\Mapping as ORM;
             ],
             controller: UtilisateurGroupe::class,
             openapiContext: [
-                'summary' => "add a user to a group",
-                'description' => "add a user to a group",
+                'summary' => 'add a user to a group',
+                'description' => 'add a user to a group',
                 'requestBody' => [
                     'content' => [
                         'application/json' => [
                             'schema' => [
                                 'type' => 'object',
                                 'properties' => [],
-                            ]
+                            ],
                         ],
                     ],
                 ],
@@ -72,9 +73,8 @@ use Doctrine\ORM\Mapping as ORM;
                             ],
                         ],
                     ],
-                ]
+                ],
             ]
-
         ),
         new Delete(
             uriTemplate: '/user/{id_user}/group/{id_group}',
@@ -83,9 +83,66 @@ use Doctrine\ORM\Mapping as ORM;
                 'id_group' => new Link(fromClass: Groupe::class),
             ],
             controller: UtilisateurGroupe::class,
-        )
+        ),
+        new Put(
+            uriTemplate: '/group/{this_id_groupe}/group/{in_id_groupe}',
+            uriVariables: [
+                'this_id_groupe' => new Link(fromClass: Groupe::class),
+                'in_id_groupe' => new Link(fromClass: Groupe::class),
+            ],
+            controller: UtilisateurGroupe::class,
+            openapiContext: [
+                'summary' => 'add a group to a group',
+                'description' => 'add a group to a group',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [],
+                            ],
+                        ],
+                    ],
+                ],
+                'response' => [
+                    '201' => [
+                        'description' => 'Group added to group',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'Succes : Groupe ajouté',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    '404' => [
+                        'description' => 'Group not found',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'error : Groupe inexistant',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        ),
     ]
 )]
+#[ApiFilter(OrderFilter::class, properties: ['lib_groupe', 'desc_groupe', 'color'], arguments: ['orderParameterName' => 'order'])]
 class Groupe
 {
     #[ORM\Id]
