@@ -3,6 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
+use App\Controller\test;
+use App\Controller\UtilisateurGroupe;
 use App\Repository\GroupeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,11 +17,80 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GroupeRepository::class)]
 #[ApiResource]
+#[ApiResource(
+    operations: [
+        new Post(
+            uriTemplate: '/user/{id_user}/group/{id_group}',
+            uriVariables: [
+                'id_user' => new Link(toProperty: 'utilisateurs', fromClass: Utilisateur::class),
+                'id_group' => new Link(fromClass: Groupe::class),
+            ],
+            controller: UtilisateurGroupe::class,
+            openapiContext: [
+                'summary' => "add a user to a group",
+                'description' => "add a user to a group",
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [],
+                            ]
+                        ],
+                    ],
+                ],
+                'response' => [
+                    '201' => [
+                        'description' => 'User added to group',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'Succes : Utilisateur ajouté',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    '404' => [
+                        'description' => 'User or group not found',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'error : Utilisateur inexistant',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ]
+            ]
+
+        ),
+        new Delete(
+            uriTemplate: '/user/{id_user}/group/{id_group}',
+            uriVariables: [
+                'id_user' => new Link(toProperty: 'utilisateurs', fromClass: Utilisateur::class),
+                'id_group' => new Link(fromClass: Groupe::class),
+            ],
+            controller: UtilisateurGroupe::class,
+        )
+    ]
+)]
 class Groupe
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column()]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]

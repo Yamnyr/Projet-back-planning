@@ -2,16 +2,27 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
+use App\Controller\test;
+
+use App\Controller\UtilisateurGroupe;
 use App\Repository\UtilisateurRepository;
+use Container6XXMQiF\getApiPlatform_Doctrine_Orm_Default_SubresourceDataProviderService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use App\Entity\Groupe;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-#[ApiResource]
+#[ApiResource()]
+
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -32,12 +43,14 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['utilisateur:read'])]
     private ?string $nom_utilisateur = null;
 
     #[ORM\Column(length: 255)]
     private ?string $prenom_utilisateur = null;
 
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'utilisateurs')]
+    #[ApiSubresource()]
     private Collection $creer_groupe;
 
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Evenement::class)]
