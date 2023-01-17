@@ -83,6 +83,20 @@ use Doctrine\ORM\Mapping as ORM;
                 'id_group' => new Link(fromClass: Groupe::class),
             ],
             controller: UtilisateurGroupe::class,
+            openapiContext: [
+                'summary' => 'remove a user from a group',
+                'description' => 'remove a user from a group',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
         ),
         new Put(
             uriTemplate: '/group/{this_id_groupe}/group/{in_id_groupe}',
@@ -165,7 +179,7 @@ class Groupe
     #[ORM\Column(length: 7)]
     private ?string $color = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'groupes')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'groupes', cascade: ['persist'])]
     private ?self $groupe_parent = null;
 
     #[ORM\OneToMany(mappedBy: 'groupe_parent', targetEntity: self::class)]
