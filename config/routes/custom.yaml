@@ -1,5 +1,1 @@
 # config/routes/custom.yaml
-custom_route:
-  path: /users/{userId}/groups/{groupId}
-  methods: [GET]
-  controller: App\Controller\CustomController::handleRequest
