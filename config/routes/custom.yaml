@@ -1,7 +1,4 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
-
+# config/routes/custom.yaml
 custom_route:
   path: /users/{userId}/groups/{groupId}
   methods: [GET]

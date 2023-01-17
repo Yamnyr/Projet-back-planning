@@ -2,7 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Odm\Filter\OrderFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\UtilisateurGroupe;
 use App\Repository\GroupeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,11 +18,150 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GroupeRepository::class)]
 #[ApiResource]
+#[ApiResource(
+    operations: [
+        new Post(
+            uriTemplate: '/user/{id_user}/group/{id_group}',
+            uriVariables: [
+                'id_user' => new Link(toProperty: 'utilisateurs', fromClass: Utilisateur::class),
+                'id_group' => new Link(fromClass: Groupe::class),
+            ],
+            controller: UtilisateurGroupe::class,
+            openapiContext: [
+                'summary' => 'add a user to a group',
+                'description' => 'add a user to a group',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [],
+                            ],
+                        ],
+                    ],
+                ],
+                'response' => [
+                    '201' => [
+                        'description' => 'User added to group',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'Succes : Utilisateur ajouté',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    '404' => [
+                        'description' => 'User or group not found',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'error : Utilisateur inexistant',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        ),
+        new Delete(
+            uriTemplate: '/user/{id_user}/group/{id_group}',
+            uriVariables: [
+                'id_user' => new Link(toProperty: 'utilisateurs', fromClass: Utilisateur::class),
+                'id_group' => new Link(fromClass: Groupe::class),
+            ],
+            controller: UtilisateurGroupe::class,
+            openapiContext: [
+                'summary' => 'remove a user from a group',
+                'description' => 'remove a user from a group',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        ),
+        new Put(
+            uriTemplate: '/group/{this_id_groupe}/group/{in_id_groupe}',
+            uriVariables: [
+                'this_id_groupe' => new Link(fromClass: Groupe::class),
+                'in_id_groupe' => new Link(fromClass: Groupe::class),
+            ],
+            controller: UtilisateurGroupe::class,
+            openapiContext: [
+                'summary' => 'add a group to a group',
+                'description' => 'add a group to a group',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [],
+                            ],
+                        ],
+                    ],
+                ],
+                'response' => [
+                    '201' => [
+                        'description' => 'Group added to group',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'Succes : Groupe ajouté',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    '404' => [
+                        'description' => 'Group not found',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'object',
+                                    'properties' => [
+                                        'message' => [
+                                            'type' => 'string',
+                                            'example' => 'error : Groupe inexistant',
+                                        ],
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        ),
+    ]
+)]
+#[ApiFilter(OrderFilter::class, properties: ['lib_groupe', 'desc_groupe', 'color'], arguments: ['orderParameterName' => 'order'])]
 class Groupe
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column()]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -33,7 +179,7 @@ class Groupe
     #[ORM\Column(length: 7)]
     private ?string $color = null;
 
-    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'groupes')]
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'groupes', cascade: ['persist'])]
     private ?self $groupe_parent = null;
 
     #[ORM\OneToMany(mappedBy: 'groupe_parent', targetEntity: self::class)]
