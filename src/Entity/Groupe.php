@@ -16,6 +16,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 #[ORM\Entity(repositoryClass: GroupeRepository::class)]
 #[ApiResource]
 #[ApiResource(
@@ -165,6 +168,7 @@ class Groupe
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['utilisateur:read'])]
     private ?string $lib_groupe = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -239,6 +243,7 @@ class Groupe
         return $this;
     }
 
+    #[ApiSubresource()]
     public function removeEvenement(Evenement $evenement): self
     {
         if ($this->evenements->removeElement($evenement)) {
