@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Odm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Delete;
@@ -15,9 +16,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: GroupeRepository::class)]
-#[ApiResource]
 #[ApiResource(
     operations: [
         new Post(
@@ -154,35 +155,48 @@ use Doctrine\ORM\Mapping as ORM;
                 ],
             ]
         ),
-    ]
+    ],
+)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['groupe:read']],
+    denormalizationContext: ['groups' => ['groupe:write']],
 )]
 #[ApiFilter(OrderFilter::class, properties: ['lib_groupe', 'desc_groupe', 'color'], arguments: ['orderParameterName' => 'order'])]
+#[ApiFilter(SearchFilter::class, properties: ['lib_groupe' => 'partial', 'desc_groupe' => 'partial', 'color' => 'partial'])]
 class Groupe
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['evenement:read', 'groupe:read', 'groupe:write', 'utilisateur:read'])]
     private ?string $lib_groupe = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['evenement:read', 'groupe:read', 'groupe:write', 'utilisateur:read'])]
     private ?string $desc_groupe = null;
 
     #[ORM\ManyToMany(targetEntity: Evenement::class, mappedBy: 'concerne')]
     private Collection $evenements;
 
     #[ORM\ManyToMany(targetEntity: Utilisateur::class, mappedBy: 'creer_groupe')]
+    #[Groups(['groupe:read'])]
     private Collection $utilisateurs;
 
     #[ORM\Column(length: 7)]
+    #[Groups(['evenement:read', 'groupe:read', 'groupe:write', 'utilisateur:read'])]
     private ?string $color = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'groupes', cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['groupe:read', 'groupe:write', 'utilisateur:read'])]
     private ?self $groupe_parent = null;
 
     #[ORM\OneToMany(mappedBy: 'groupe_parent', targetEntity: self::class)]
+    #[Groups(['groupe:read'])]
     private Collection $groupes;
 
     public function __construct()
