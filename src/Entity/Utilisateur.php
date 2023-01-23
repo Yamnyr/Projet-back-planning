@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
+use App\Controller\UtilisateurController;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -13,15 +15,30 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-#[ApiResource()]
+#[ApiResource(
+    normalizationContext: ['groups' => ['utilisateur:read']],
+    denormalizationContext: ['groups' => ['utilisateur:write']],
+)]
+#[ApiResource(
+    normalizationContext: ['groups' => ['utilisateur:read']],
+    denormalizationContext: ['groups' => ['utilisateur:write']],
+    operations: [
+        new Get(
+            uriTemplate: '/user/me',
+            controller: UtilisateurController::class
+        ),
+    ]
+)]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['groupe:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups(['groupe:read', 'utilisateur:read', 'utilisateur:write'])]
     private ?string $username = null;
 
     #[ORM\Column]
@@ -34,17 +51,20 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['utilisateur:read'])]
+    #[Groups(['utilisateur:read', 'groupe:read', 'utilisateur:read', 'utilisateur:write'])]
     private ?string $nom_utilisateur = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['utilisateur:read', 'groupe:read', 'utilisateur:read', 'utilisateur:write'])]
     private ?string $prenom_utilisateur = null;
 
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'utilisateurs')]
     #[ApiSubresource()]
+    #[Groups(['utilisateur:read'])]
     private Collection $creer_groupe;
 
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Evenement::class)]
+    #[Groups(['utilisateur:read'])]
     private Collection $evenement;
 
     public function __construct()
