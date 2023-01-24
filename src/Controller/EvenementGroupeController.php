@@ -41,7 +41,7 @@ class EvenementGroupeController extends AbstractController
         }
     }
 
-    #[Route('/event/{id_event}/group/{id_group}', name: 'DeleteUserInGroupe', defaults: ['_api_resource_class' => Groupe::class], methods: ['DELETE'])]
+    #[Route('/event/{id_event}/group/{id_group}', name: 'DeleteEventInGroupe', defaults: ['_api_resource_class' => Groupe::class], methods: ['DELETE'])]
     public function DeleteEventInGroupe(Request $request, ManagerRegistry $doctrine)
     {
         $Revent = $doctrine->getRepository(Evenement::class);
