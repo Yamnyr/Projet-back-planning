@@ -2,32 +2,46 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Odm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\EvenementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EvenementRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['evenement:read']],
+    denormalizationContext: ['groups' => ['evenement:write']]
+)]
+#[ApiFilter(SearchFilter::class, properties: ['concerne.lib_groupe' => 'partial'])]
+#[ApiFilter(OrderFilter::class, properties: ['date'], arguments: ['orderParameterName' => 'order'])]
 class Evenement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['evenement:read', 'evenement:write'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['evenement:read', 'evenement:write', 'groupe:read', 'utilisateur:read'])]
     private ?string $lib_evenement = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['evenement:read', 'evenement:write', 'groupe:read', 'utilisateur:read'])]
     private ?string $desc_evenement = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['evenement:read', 'evenement:write', 'groupe:read', 'utilisateur:read'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'evenements')]
+    #[Groups(['evenement:read', 'evenement:write', 'utilisateur:read'])]
     private Collection $concerne;
 
     #[ORM\ManyToOne(inversedBy: 'evenement')]
@@ -75,42 +89,6 @@ class Evenement
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getHeureDebut(): ?\DateTimeInterface
-    {
-        return $this->heure_debut;
-    }
-
-    public function setHeureDebut(?\DateTimeInterface $heure_debut): self
-    {
-        $this->heure_debut = $heure_debut;
-
-        return $this;
-    }
-
-    public function getHeureFin(): ?\DateTimeInterface
-    {
-        return $this->heure_fin;
-    }
-
-    public function setHeureFin(?\DateTimeInterface $heure_fin): self
-    {
-        $this->heure_fin = $heure_fin;
-
-        return $this;
-    }
-
-    public function getLocalisation(): ?string
-    {
-        return $this->localisation;
-    }
-
-    public function setLocalisation(?string $localisation): self
-    {
-        $this->localisation = $localisation;
 
         return $this;
     }
