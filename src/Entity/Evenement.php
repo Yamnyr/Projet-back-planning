@@ -16,7 +16,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\Entity(repositoryClass: EvenementRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['evenement:read']],
-    denormalizationContext: ['groups' => ['evenement:write']]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['concerne.lib_groupe' => 'partial'])]
 #[ApiFilter(OrderFilter::class, properties: ['date'], arguments: ['orderParameterName' => 'order'])]
@@ -25,23 +24,23 @@ class Evenement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['evenement:read', 'evenement:write'])]
+    #[Groups(['evenement:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['evenement:read', 'evenement:write', 'groupe:read', 'utilisateur:read'])]
+    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read'])]
     private ?string $lib_evenement = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['evenement:read', 'evenement:write', 'groupe:read', 'utilisateur:read'])]
+    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read'])]
     private ?string $desc_evenement = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['evenement:read', 'evenement:write', 'groupe:read', 'utilisateur:read'])]
+    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'evenements')]
-    #[Groups(['evenement:read', 'evenement:write', 'utilisateur:read'])]
+    #[Groups(['evenement:read', 'utilisateur:read'])]
     private Collection $concerne;
 
     #[ORM\ManyToOne(inversedBy: 'evenement')]
