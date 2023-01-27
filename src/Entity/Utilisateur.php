@@ -5,6 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiSubresource;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
+use App\Controller\SecurityController;
 use App\Controller\UtilisateurController;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -26,6 +28,30 @@ use Symfony\Component\Serializer\Annotation\Groups;
         new Get(
             uriTemplate: '/user/me',
             controller: UtilisateurController::class
+        ),
+        new Post(
+            uriTemplate: '/login',
+            controller: SecurityController::class,
+            openapiContext: [
+                'summary' => 'Login',
+                'requestBody' => [
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'username' => [
+                                        'type' => 'string',
+                                    ],
+                                    'password' => [
+                                        'type' => 'string',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ),
     ]
 )]

@@ -21,4 +21,6 @@ class UtilisateurController extends AbstractController
 
         return $this->getUser();
     }
+
+    
 }
