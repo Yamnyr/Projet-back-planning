@@ -48,7 +48,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    private ?string $password = null;
+    private ?string $password;
 
     #[ORM\Column(length: 255)]
     #[Groups(['utilisateur:read', 'groupe:read', 'utilisateur:read', 'utilisateur:write'])]
