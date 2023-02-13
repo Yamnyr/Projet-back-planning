@@ -4,8 +4,8 @@ namespace App\Factory;
 
 use App\Entity\Utilisateur;
 use App\Repository\UtilisateurRepository;
-use Zenstruck\Foundry\ModelFactory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
 
@@ -58,9 +58,8 @@ final class UtilisateurFactory extends ModelFactory
             ->afterInstantiate(function (Utilisateur $user) {
                 $user->setPassword($this->passwordHasher->hashPassword($user, $user->getPassword()));
             })
-            ;
+        ;
     }
-
 
     protected static function getClass(): string
     {
