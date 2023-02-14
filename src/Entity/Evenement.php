@@ -11,14 +11,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 #[ORM\Entity(repositoryClass: EvenementRepository::class)]
 #[ApiResource(
     normalizationContext: ['groups' => ['evenement:read']],
-)]
-#[ApiFilter(SearchFilter::class, properties: ['concerne.lib_groupe' => 'partial'])]
-#[ApiFilter(OrderFilter::class, properties: ['date'], arguments: ['orderParameterName' => 'order'])]
+    )]  
+#[ApiFilter(SearchFilter::class, properties: ['concerne.lib_groupe' => 'partial', 'date'=> 'partial', 'id' => 'exact'])]
+#[ApiFilter(OrderFilter::class, properties: ['date'])]
 class Evenement
 {
     #[ORM\Id]
