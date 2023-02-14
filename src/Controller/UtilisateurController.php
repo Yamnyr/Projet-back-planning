@@ -5,6 +5,7 @@ namespace App\Controller;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Json;
 
 #[Route('/api')]
 #[ApiResource()]
@@ -19,6 +20,7 @@ class UtilisateurController extends AbstractController
             throw $this->createNotFoundException('Utilisateur non trouvé');
         }
 
-        return $this->getUser();
+        // return response with user data
+        return $this->json($user, 200);
     }
 }
