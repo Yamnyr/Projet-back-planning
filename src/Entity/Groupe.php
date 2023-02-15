@@ -197,7 +197,7 @@ class Groupe
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'groupes', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['groupe:read', 'utilisateur:read', 'getgroupe:read'])]
+    #[Groups([ 'utilisateur:read', 'getgroupe:read', 'groupe:read'])]
     private ?self $groupe_parent = null;
 
     #[ORM\OneToMany(mappedBy: 'groupe_parent', targetEntity: self::class)]
