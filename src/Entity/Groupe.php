@@ -10,6 +10,7 @@ use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Get;
 use App\Controller\UtilisateurGroupe;
 use App\Repository\GroupeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -76,6 +77,11 @@ use Symfony\Component\Serializer\Annotation\Groups;
                     ],
                 ],
             ]
+        ),
+        New Get(
+            uriTemplate: '/groupe/me',
+            controller: EvenementController::class,
+            normalizationContext: ['groups' => ['getgroupe:read']],
         ),
         new Delete(
             uriTemplate: '/user/{id_user}/group/{id_group}',
@@ -167,15 +173,15 @@ class Groupe
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read'])]
+    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read', 'getgroupe:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read'])]
+    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read', 'getgroupe:read'])]
     private ?string $lib_groupe = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read'])]
+    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read', 'getgroupe:read'])]
     private ?string $desc_groupe = null;
 
     #[ORM\ManyToMany(targetEntity: Evenement::class, mappedBy: 'concerne')]
@@ -186,12 +192,12 @@ class Groupe
     private Collection $utilisateurs;
 
     #[ORM\Column(length: 7)]
-    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read'])]
+    #[Groups(['evenement:read', 'groupe:read', 'utilisateur:read', 'getgroupe:read'])]
     private ?string $color = null;
 
     #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'groupes', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['groupe:read', 'utilisateur:read'])]
+    #[Groups(['groupe:read', 'utilisateur:read', 'getgroupe:read'])]
     private ?self $groupe_parent = null;
 
     #[ORM\OneToMany(mappedBy: 'groupe_parent', targetEntity: self::class)]
