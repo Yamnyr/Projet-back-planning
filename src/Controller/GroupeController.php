@@ -35,4 +35,16 @@ class GroupeController extends AbstractController
             return $this->json(['message' => 'error : Groupe parent inexistant'], 404);
         }
     }
+
+    #[Route('/groupe/me', name: 'GetUserGroupe', defaults: ['_api_resource_class' => Groupe::class], methods: ['GET'])]
+    public function GetUserGroupe(Request $request)
+    {
+        $user = $this->getUser();
+        if (!$user) {
+            throw $this->createNotFoundException('Utilisateur non trouvé');
+        }
+        $evenements = $user->getCreerGroupe();
+        return $this->json($evenements, 200);
+    }
+
 }

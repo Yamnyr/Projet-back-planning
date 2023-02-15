@@ -22,12 +22,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
     denormalizationContext: ['groups' => ['utilisateur:write']],
 )]
 #[ApiResource(
-    normalizationContext: ['groups' => ['utilisateur:read']],
+    normalizationContext: ['groups' => ['utilisateur:read', 'getevenment:read']],
     denormalizationContext: ['groups' => ['utilisateur:write']],
     operations: [
         new Get(
             uriTemplate: '/user/me',
-            controller: UtilisateurController::class
+            controller: UtilisateurController::class,
         ),
         new Post(
             uriTemplate: '/login',
@@ -86,11 +86,10 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToMany(targetEntity: Groupe::class, inversedBy: 'utilisateurs')]
     #[ApiSubresource()]
-    #[Groups(['utilisateur:read'])]
     private Collection $creer_groupe;
 
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Evenement::class)]
-    #[Groups(['utilisateur:read'])]
+    #[Groups(['getevenment:read'])]
     private Collection $evenement;
 
     public function __construct()
