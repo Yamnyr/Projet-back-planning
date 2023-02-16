@@ -39,6 +39,18 @@ class EvenementRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByIntervale($date_start, $date_end)
+    {
+        return $this->createQueryBuilder('e')
+            ->andWhere('e.date >= :date_start')
+            ->andWhere('e.date <= :date_end')
+            ->setParameter('date_start', $date_start)
+            ->setParameter('date_end', $date_end)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 //    /**
 //     * @return Evenement[] Returns an array of Evenement objects
 //     */
