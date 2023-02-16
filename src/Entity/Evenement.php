@@ -11,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Link;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\EvenementController;
 use Symfony\Component\Serializer\Annotation\Context;
@@ -21,7 +22,18 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 #[ApiResource(
     normalizationContext: ['groups' => ['evenement:read']],
 )]
-
+#[ApiResource(
+    operations:[
+        new Get(
+            uriTemplate: '/evenements/start/{date_start}/end/{date_end}',
+            uriVariables: [
+                'date_start' => new Link(fromClass: evenement::class),
+                'date_end' => new Link(fromClass: evenement::class),
+            ],
+            controller: EvenementController::class,
+        )
+    ]
+)]
 #[ApiFilter(SearchFilter::class, properties: ['concerne.lib_groupe' => 'partial', 'date'=> 'partial', 'id' => 'exact'])]
 #[ApiFilter(OrderFilter::class, properties: ['date'])]
 class Evenement
