@@ -40,7 +40,11 @@ class EvenementController extends AbstractController
       $evenements = $evenementRepository->createQueryBuilder('e')
           ->join('e.concerne', 'g')
           ->where('g.lib_groupe LIKE :libelle')
+          ->andWhere('e.date >= :date_start')
+          ->andWhere('e.date <= :date_end')
           ->setParameter('libelle', "%". $lib_groupe . "%")
+          ->setParameter('date_start', $date_start)
+          ->setParameter('date_end', $date_end)
           ->getQuery()
           ->getResult();
 
