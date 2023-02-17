@@ -2,21 +2,30 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\OpenApi\Factory\OpenApiFactory;
+use ApiPlatform\Core\OpenApi\Model\Parameter;
+use ApiPlatform\Core\OpenApi\OpenApi;
+use ApiPlatform\Core\PathResolver\CustomOperationPathResolver;
 use ApiPlatform\Doctrine\Odm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\CollectionOperationInterface;
 use App\Repository\EvenementRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Link;
+use ApiPlatform\OpenApi\Model\Parameter as ModelParameter;
 use Doctrine\ORM\Mapping as ORM;
 use App\Controller\EvenementController;
+use Doctrine\ORM\Query\Parameter as QueryParameter;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+
+use function Symfony\Component\DependencyInjection\Loader\Configurator\param;
 
 #[ORM\Entity(repositoryClass: EvenementRepository::class)]
 #[ApiResource(
@@ -29,8 +38,21 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
             uriVariables: [
                 'date_start' => new Link(fromClass: evenement::class),
                 'date_end' => new Link(fromClass: evenement::class),
+                // 'lib_groupe' => new Parameter(name: 'lib_groupe', in: 'query', schema: ['type' => 'string']),
             ],
             controller: EvenementController::class,
+            openapiContext:[
+                'parameters' => [
+                    [
+                        'name' => 'lib_groupe',
+                        'in' => 'query',
+                        'required' => false,
+                        'schema' => [
+                            'type' => 'string',
+                        ],
+                    ],
+                ]
+                ],
         )
     ]
 )]
