@@ -51,6 +51,22 @@ class EvenementRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findByIntervaleAndGroupe($date_start, $date_end, $lib_groupe)
+    {
+        //query builder pour récupérer les événements d'un groupe dans un intervalle de temps donné, en utilisant la collection concerne, qui contient les groupes concernés par l'événement
+        return $this->createQueryBuilder('e')
+            ->join('e.concerne', 'c')
+            ->join('c.groupe', 'g')
+            ->andWhere('e.date >= :date_start')
+            ->andWhere('e.date <= :date_end')
+            ->andWhere('g.lib_groupe = :lib_groupe')
+            ->setParameter('date_start', $date_start)
+            ->setParameter('date_end', $date_end)
+            ->setParameter('lib_groupe', $lib_groupe)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Evenement[] Returns an array of Evenement objects
 //     */
