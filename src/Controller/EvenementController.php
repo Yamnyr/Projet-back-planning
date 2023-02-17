@@ -49,7 +49,7 @@ class EvenementController extends AbstractController
     }
 
    if(!$evenements){
-       return $this->json(['message' => 'Aucun evenement trouvé'], 404);
+       return $this->json([], 200);
      }
 
     return $this->json([$evenements], 200);
