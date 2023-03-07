@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Groupe;
+use App\Entity\Utilisateur;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,6 +40,17 @@ class GroupeRepository extends ServiceEntityRepository
         }
     }
 
+    public function containsUtilisateur(Utilisateur $user) : bool
+    {
+        $groupes = $this->findAll();
+        foreach ($groupes as $groupe) {
+            if ($groupe->getUtilisateurs()->contains($user)) {
+                return true;
+            }
+        }
+        return false;
+
+    }
 //    /**
 //     * @return Groupe[] Returns an array of Groupe objects
 //     */
