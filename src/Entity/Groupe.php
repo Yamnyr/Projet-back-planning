@@ -11,6 +11,8 @@ use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Get;
+use App\Controller\EvenementController;
+use App\Controller\GroupeController;
 use App\Controller\UtilisateurGroupe;
 use App\Repository\GroupeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -80,7 +82,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
         New Get(
             uriTemplate: '/groupe/me',
-            controller: EvenementController::class,
+            controller: GroupeController::class,
             normalizationContext: ['groups' => ['getgroupe:read']],
         ),
         new Delete(

@@ -40,11 +40,31 @@ class GroupeController extends AbstractController
     public function GetUserGroupe(Request $request)
     {
         $user = $this->getUser();
+
+
+        if(in_array('ROLE_ADMINISTRATEUR', $user->getRoles()) OR in_array('ROLE_PROFESSEUR', $user->getRoles())){
+            $groupe = $this->getDoctrine()->getRepository(Groupe::class)->findAll();
+            return $this->json($groupe, 200);
+        }
+
+
+        if(in_array('ROLE_ELEVE', $user->getRoles())){
+            // all groupe contain this user
+            $groupes = $this->getDoctrine()->getRepository(Groupe::class)->findAll();
+            $result = [];
+            foreach($groupes as $groupe){
+                if($groupe->getUtilisateurs()->contains($user)){
+                    $result[] = $groupe;
+                }
+            }
+
+            return $this->json($result, 200);
+        }
+
         if (!$user) {
             throw $this->createNotFoundException('Utilisateur non trouvé');
         }
-        $evenements = $user->getCreerGroupe();
-        return $this->json($evenements, 200);
+        return $this->json(['message' => 'error : Utilisateur non trouvé'], 404);
     }
 
 }
